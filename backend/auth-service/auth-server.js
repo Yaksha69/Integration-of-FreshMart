@@ -1,28 +1,26 @@
-require('dotenv').config()
+require('dotenv').config();
+const express = require('express');
+const mongoose = require('mongoose');
+const authRoutes = require('./route'); // Fix: Importing from route.js
 
-const express = require('express')
-const mongoose = require('mongoose')
+// Init app
+const app = express();
 
-const authRoute = require('./route')
+// Middleware
+app.use(express.json()); // Ensure request body is parsed
+app.use((req, res, next) => {
+    console.log(req.path, req.method);
+    next();
+});
 
-//init app
-const app = express()
+// Routes
+app.use('/user', authRoutes);
 
-//middleware
-app.use(express.json())
-app.use((req, res, next) =>{
-    console.log(req.path, req.method)
-    next()
-})
-
+// Database connection
 mongoose.connect(process.env.DB)
-    .then(() =>{
-        app.listen(process.env.PORT, () =>{
-            console.log(`Connected to database and listening to port ${process.env.PORT}`)
-        })
-    }).catch(error =>{
-        console.log(error)
+    .then(() => {
+        app.listen(process.env.PORT, () => {
+            console.log(`Connected to database and listening on port ${process.env.PORT}`);
+        });
     })
-
-
-app.use('/user', authRoute)
+    .catch(error => console.log(error));
