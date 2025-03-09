@@ -27,32 +27,28 @@ const getAllProducts = async(req, res) =>{
 
 
 //Reduce Stock
-const reduceStock = async(req, res) =>{
-    const {productId} = req.params
-    const {sold} = req.body
-
-    if(!mongoose.Types.ObjectId.isValid(productId)){
-        res.status(400).json({success: false, messsage: `Invalid ID: ${productId}`})
-    }
+const reduceStock = async(req, res) => {
+    const { product_name } = req.params;
+    const { sold } = req.body;
 
     try {
-        const product = await Product.findById(productId)
+        const product = await Product.findOne({ name: product_name });
 
-        if(!product){
-            res.status(404).json({success: false, message: `No such product exist with an ID: ${productId}`})
+        if (!product) {
+            return res.status(404).json({ success: false, message: `No such product exists with the name: ${product_name}` });
         }
 
-        if(sold > product.stock){
-            res.status(500).json({success: false, message: `The stock of ${product.name} is insufficient`})
+        if (sold > product.stock) {
+            return res.status(400).json({ success: false, message: `The stock of ${product.name} is insufficient` });
         }
-        
-        product.stock -= sold
-        await product.save()
 
-        res.status(200).json({success: true, message: product})
+        product.stock -= sold;
+        await product.save();
+
+        return res.status(200).json({ success: true, message: product });
 
     } catch (error) {
-        res.status(400).json({success: false, message: error.message})
+        return res.status(500).json({ success: false, message: error.message });
     }
 }
 

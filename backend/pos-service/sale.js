@@ -7,10 +7,9 @@ const saleSchema = new Schema({
     items: {
         type: [
             {
-                product: {
-                    type: Schema.Types.ObjectId,
-                    required: true,
-                    ref: 'Product'
+                product_name: {
+                    type: String,
+                    required: true
                 },
                 num_sold: {
                     type: Number,

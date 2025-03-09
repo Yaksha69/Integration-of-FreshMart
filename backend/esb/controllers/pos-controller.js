@@ -5,22 +5,31 @@ const newSale = async(req, res) =>{
 
     try{
         for(const item of items){
-            const inv_res = await axios.patch(`${process.env.INVENTORY_SERVICE}/edit/${item.product}`, {sold:item.num_sold})
+            const inv_res = await axios.patch(`${process.env.INVENTORY_SERVICE}/edit/${item.product_name}`, {sold:item.num_sold})
             
             if(!inv_res.data.success){
-                res.status(500).json({success: false, message: inv_res.data.message})
+                return res.status(500).json({success: false, message: inv_res.data.message})
             }
         }
 
         const pos_response = await axios.post(`${process.env.POS_SERVICE}/add`, {items, total_sale})
 
-        res.status(201).json({success: true, message: pos_response.data})
+        return res.status(201).json({success: true, message: pos_response.data})
+    }catch(error){
+        return res.status(500).json({success: false, message: error.message})
+    }
+}
+
+const fetchSales = async(req, res) =>{
+    try{
+        const pos_response = await axios.get(`${process.env.POS_SERVICE}/all`)
+        res.status(200).json({success: true, message: pos_response.data})
     }catch(error){
         res.status(500).json({success: false, message: error.message})
     }
 }
 
-
 module.exports = {
     newSale,
+    fetchSales
 }
