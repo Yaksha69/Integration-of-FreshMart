@@ -9,6 +9,6 @@ const {
 
 router.post('/add', createProduct)
 router.get('/', getAllProducts)
-router.patch('/edit/:productId', reduceStock)
+router.patch('/edit/:product_name', reduceStock)
 
 module.exports = router

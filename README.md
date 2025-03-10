@@ -27,6 +27,7 @@ Inventory:
 
 POS:
  api/v1/pos/new
+ api/v1/pos/all
 
 AUTH:
  api/v1/auth/signup
